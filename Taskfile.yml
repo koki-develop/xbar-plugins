@@ -11,9 +11,11 @@ tasks:
       - build-github
     cmd: go build .
   build-github:
-    cmd: |
-      cat << EOF > plugins/github.sh
-      #!/bin/bash
+    cmds:
+      - |
+        cat << EOF > plugins/github.sh
+        #!/bin/bash
 
-      $(pwd)/xbar-plugins github
-      EOF
+        $(pwd)/xbar-plugins github
+        EOF
+      - chmod +x ./plugins/github.sh
