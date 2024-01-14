@@ -9,7 +9,7 @@ tasks:
   build:
     deps:
       - build-github
-    cmd: go build .
+    cmd: go build -ldflags "-s -w -X 'github.com/koki-develop/xbar-plugins/cmd.githubToken=$(gh auth token)'" .
   build-github:
     cmds:
       - |
