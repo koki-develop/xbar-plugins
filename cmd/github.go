@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/koki-develop/xbar-plugins/internal/github"
@@ -73,7 +74,15 @@ var githubCmd = &cobra.Command{
 			for _, repo := range repos {
 				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
 				for _, n := range repo.Notifications {
-					fmt.Fprintf(v, "%s | href=%s\n", n.Title, n.URL)
+					fmt.Fprintf(v, "%s\n", n.Title)
+					p, err := os.Executable()
+					if err != nil {
+						return err
+					}
+					if n.URL != "" {
+						fmt.Fprintf(v, "--Open in browser | href=%s\n", n.URL)
+					}
+					fmt.Fprintf(v, "--Mark as read | shell=%s param1=github param2=read-notification param3=%s refresh=true\n", p, n.ID)
 				}
 			}
 		}
@@ -83,6 +92,24 @@ var githubCmd = &cobra.Command{
 	},
 }
 
+var readNotificationCmd = &cobra.Command{
+	Use:  "read-notification",
+	Args: cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		c, err := github.NewClient(githubToken)
+		if err != nil {
+			return err
+		}
+
+		if err := c.MarkNotificationAsRead(args[0]); err != nil {
+			return err
+		}
+
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(githubCmd)
+	githubCmd.AddCommand(readNotificationCmd)
 }

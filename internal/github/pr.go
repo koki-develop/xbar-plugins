@@ -56,7 +56,7 @@ func (c *Client) SearchPullRequestsReviewRequested() ([]*Repository, error) {
 		})
 	}
 
-	return c.groupByRepository(prs), nil
+	return c.groupPullRequestsByRepository(prs), nil
 }
 
 func (c *Client) SearchPullRequestsMine() ([]*Repository, error) {
@@ -99,20 +99,25 @@ func (c *Client) SearchPullRequestsMine() ([]*Repository, error) {
 		})
 	}
 
-	return c.groupByRepository(prs), nil
+	return c.groupPullRequestsByRepository(prs), nil
 }
 
-func (c *Client) groupByRepository(prs []*PullRequest) []*Repository {
-	reposmap := map[*Repository][]*PullRequest{}
+func (c *Client) groupPullRequestsByRepository(prs []*PullRequest) []*Repository {
+	repos := map[string]*Repository{}
 	for _, pr := range prs {
-		reposmap[pr.Repository] = append(reposmap[pr.Repository], pr)
+		key := pr.Repository.Owner + "/" + pr.Repository.Name
+		if _, ok := repos[key]; !ok {
+			repos[key] = &Repository{
+				Owner: pr.Repository.Owner,
+				Name:  pr.Repository.Name,
+			}
+		}
+		repos[key].PullRequests = append(repos[key].PullRequests, pr)
 	}
 
-	repos := make([]*Repository, 0, len(reposmap))
-	for repo, prs := range reposmap {
-		repo.PullRequests = prs
-		repos = append(repos, repo)
+	var rs []*Repository
+	for _, repo := range repos {
+		rs = append(rs, repo)
 	}
-
-	return repos
+	return rs
 }
