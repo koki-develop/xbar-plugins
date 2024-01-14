@@ -28,6 +28,8 @@ var githubCmd = &cobra.Command{
 		nCnt := 0
 
 		{
+			s := new(strings.Builder)
+
 			repos, err := c.SearchPullRequestsReviewRequested()
 			if err != nil {
 				return err
@@ -36,22 +38,23 @@ var githubCmd = &cobra.Command{
 			for _, repo := range repos {
 				rrCnt += len(repo.PullRequests)
 			}
-			fmt.Fprintln(v, ":eyes: Review Requested | color=red")
 			for _, repo := range repos {
-				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
+				fmt.Fprintf(s, "%s/%s | size=12\n", repo.Owner, repo.Name)
 				for _, pr := range repo.PullRequests {
-					fmt.Fprintf(v, "%s | href=%s\n", pr.Title, pr.URL)
+					fmt.Fprintf(s, "%s | href=%s\n", pr.Title, pr.URL)
 				}
 			}
 
 			if rrCnt == 0 {
-				fmt.Fprintln(v, "No review requested")
+				fmt.Fprintln(s, "No review requested")
 			}
+
+			fmt.Fprintf(v, ":eyes: Review Requested (%d) | color=red\n", rrCnt)
+			fmt.Fprint(v, s.String())
 		}
 
 		{
-			fmt.Fprintln(v, "---")
-			fmt.Fprintln(v, ":seedling: My Pull Requests | color=green")
+			s := new(strings.Builder)
 
 			repos, err := c.SearchPullRequestsMine()
 			if err != nil {
@@ -61,20 +64,23 @@ var githubCmd = &cobra.Command{
 			for _, repo := range repos {
 				mpCnt += len(repo.PullRequests)
 
-				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
+				fmt.Fprintf(s, "%s/%s | size=12\n", repo.Owner, repo.Name)
 				for _, pr := range repo.PullRequests {
-					fmt.Fprintf(v, "%s | href=%s\n", pr.Title, pr.URL)
+					fmt.Fprintf(s, "%s | href=%s\n", pr.Title, pr.URL)
 				}
 			}
 
 			if mpCnt == 0 {
-				fmt.Fprintln(v, "No pull requests")
+				fmt.Fprintln(s, "No pull requests")
 			}
+
+			fmt.Fprintln(v, "---")
+			fmt.Fprintf(v, ":seedling: My Pull Requests (%d) | color=green\n", mpCnt)
+			fmt.Fprint(v, s.String())
 		}
 
 		{
-			fmt.Fprintln(v, "---")
-			fmt.Fprintln(v, ":bell: Notifications | color=blue")
+			s := new(strings.Builder)
 
 			repos, err := c.FetchNotifications()
 			if err != nil {
@@ -84,20 +90,24 @@ var githubCmd = &cobra.Command{
 			for _, repo := range repos {
 				nCnt += len(repo.Notifications)
 
-				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
+				fmt.Fprintf(s, "%s/%s | size=12\n", repo.Owner, repo.Name)
 				for _, n := range repo.Notifications {
-					fmt.Fprintf(v, "(%s) %s | href=%s\n", n.Reason, n.Title, n.URL)
+					fmt.Fprintf(s, "(%s) %s | href=%s\n", n.Reason, n.Title, n.URL)
 					p, err := os.Executable()
 					if err != nil {
 						return err
 					}
-					fmt.Fprintf(v, "--Mark as read | shell=%s param1=github param2=read-notification param3=%s refresh=true\n", p, n.ID)
+					fmt.Fprintf(s, "--Mark as read | shell=%s param1=github param2=read-notification param3=%s refresh=true\n", p, n.ID)
 				}
 			}
 
 			if nCnt == 0 {
-				fmt.Fprintln(v, "No notifications")
+				fmt.Fprintln(s, "No notifications")
 			}
+
+			fmt.Fprintln(v, "---")
+			fmt.Fprintf(v, ":bell: Notifications (%d) | color=blue\n", nCnt)
+			fmt.Fprint(v, s.String())
 		}
 
 		fmt.Printf("GitHub (%d/%d/%d)\n", rrCnt, mpCnt, nCnt)
