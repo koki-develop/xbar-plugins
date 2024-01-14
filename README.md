@@ -1,5 +1,7 @@
 # My xbar Plugins
 
+自分用。
+
 ## Installation
 
 > [!NOTE]
