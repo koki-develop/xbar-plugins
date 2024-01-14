@@ -5,7 +5,7 @@ tasks:
     deps:
       - build
     cmds:
-      - ln -sf $(pwd)/plugins/github.sh ${HOME}/Library/Application\ Support/xbar/plugins/github.30s.sh
+      - ln -sf $(pwd)/plugins/github.sh ${HOME}/Library/Application\ Support/xbar/plugins/github.1m.sh
   build:
     deps:
       - build-github
