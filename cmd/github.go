@@ -52,8 +52,6 @@ var githubCmd = &cobra.Command{
 			}
 
 			for _, repo := range repos {
-				cnt += len(repo.PullRequests)
-
 				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
 				for _, pr := range repo.PullRequests {
 					fmt.Fprintf(v, "%s | href=%s\n", pr.Title, pr.URL)
