@@ -1,0 +1,19 @@
+version: '3'
+
+tasks:
+  install:
+    deps:
+      - build
+    cmds:
+      - ln -sf $(pwd)/plugins/github.sh ${HOME}/Library/Application\ Support/xbar/plugins/github.30s.sh
+  build:
+    deps:
+      - build-github
+    cmd: go build .
+  build-github:
+    cmd: |
+      cat << EOF > plugins/github.sh
+      #!/bin/bash
+
+      $(pwd)/xbar-plugins github
+      EOF
