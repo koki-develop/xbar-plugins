@@ -4,5 +4,6 @@ type Repository struct {
 	Owner string
 	Name  string
 
-	PullRequests []*PullRequest
+	PullRequests  []*PullRequest
+	Notifications []*Notification
 }

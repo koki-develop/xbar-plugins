@@ -61,6 +61,23 @@ var githubCmd = &cobra.Command{
 			}
 		}
 
+		{
+			fmt.Fprintln(v, "---")
+			fmt.Fprintln(v, "Notifications")
+
+			repos, err := c.FetchNotifications()
+			if err != nil {
+				return err
+			}
+
+			for _, repo := range repos {
+				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
+				for _, n := range repo.Notifications {
+					fmt.Fprintf(v, "%s | href=%s\n", n.Title, n.URL)
+				}
+			}
+		}
+
 		fmt.Println(v.String())
 		return nil
 	},
