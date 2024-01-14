@@ -2,7 +2,12 @@
 
 ## Installation
 
-TODO
+> **Note**
+> [go-task](https://github.com/go-task/task) がインストールされている必要がある。
+
+```console
+$ task install
+```
 
 ## LICENSE
 
