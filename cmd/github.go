@@ -24,6 +24,7 @@ var githubCmd = &cobra.Command{
 		}
 
 		rrCnt := 0
+		mpCnt := 0
 		nCnt := 0
 
 		{
@@ -42,6 +43,10 @@ var githubCmd = &cobra.Command{
 					fmt.Fprintf(v, "%s | href=%s\n", pr.Title, pr.URL)
 				}
 			}
+
+			if rrCnt == 0 {
+				fmt.Fprintln(v, "No review requested")
+			}
 		}
 
 		{
@@ -54,10 +59,16 @@ var githubCmd = &cobra.Command{
 			}
 
 			for _, repo := range repos {
+				mpCnt += len(repo.PullRequests)
+
 				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
 				for _, pr := range repo.PullRequests {
 					fmt.Fprintf(v, "%s | href=%s\n", pr.Title, pr.URL)
 				}
+			}
+
+			if mpCnt == 0 {
+				fmt.Fprintln(v, "No pull requests")
 			}
 		}
 
@@ -83,9 +94,13 @@ var githubCmd = &cobra.Command{
 					fmt.Fprintf(v, "--Mark as read | shell=%s param1=github param2=read-notification param3=%s refresh=true\n", p, n.ID)
 				}
 			}
+
+			if nCnt == 0 {
+				fmt.Fprintln(v, "No notifications")
+			}
 		}
 
-		fmt.Printf("GitHub (%d/%d)\n", rrCnt, nCnt)
+		fmt.Printf("GitHub (%d/%d/%d)\n", rrCnt, mpCnt, nCnt)
 		fmt.Println("---")
 		fmt.Println(v.String())
 		return nil
