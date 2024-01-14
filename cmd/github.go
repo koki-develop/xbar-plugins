@@ -22,7 +22,9 @@ var githubCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		cnt := 0
+
+		rrCnt := 0
+		nCnt := 0
 
 		{
 			repos, err := c.SearchPullRequestsReviewRequested()
@@ -31,7 +33,7 @@ var githubCmd = &cobra.Command{
 			}
 
 			for _, repo := range repos {
-				cnt += len(repo.PullRequests)
+				rrCnt += len(repo.PullRequests)
 			}
 			fmt.Fprintln(v, ":eyes: Review Requested | color=red")
 			for _, repo := range repos {
@@ -69,7 +71,7 @@ var githubCmd = &cobra.Command{
 			}
 
 			for _, repo := range repos {
-				cnt += len(repo.Notifications)
+				nCnt += len(repo.Notifications)
 
 				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
 				for _, n := range repo.Notifications {
@@ -86,7 +88,7 @@ var githubCmd = &cobra.Command{
 			}
 		}
 
-		fmt.Printf("GitHub (%d)\n", cnt)
+		fmt.Printf("GitHub (%d/%d)\n", rrCnt, nCnt)
 		fmt.Println("---")
 		fmt.Println(v.String())
 		return nil
