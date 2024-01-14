@@ -33,10 +33,7 @@ var githubCmd = &cobra.Command{
 			for _, repo := range repos {
 				cnt += len(repo.PullRequests)
 			}
-			fmt.Fprintf(v, "GitHub (%d)\n", cnt)
-			fmt.Fprintln(v, "---")
-
-			fmt.Fprintln(v, "Review Requested")
+			fmt.Fprintln(v, ":eyes: Review Requested | color=red")
 			for _, repo := range repos {
 				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
 				for _, pr := range repo.PullRequests {
@@ -47,7 +44,7 @@ var githubCmd = &cobra.Command{
 
 		{
 			fmt.Fprintln(v, "---")
-			fmt.Fprintln(v, "My Pull Requests")
+			fmt.Fprintln(v, ":seedling: My Pull Requests | color=green")
 
 			repos, err := c.SearchPullRequestsMine()
 			if err != nil {
@@ -55,6 +52,8 @@ var githubCmd = &cobra.Command{
 			}
 
 			for _, repo := range repos {
+				cnt += len(repo.PullRequests)
+
 				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
 				for _, pr := range repo.PullRequests {
 					fmt.Fprintf(v, "%s | href=%s\n", pr.Title, pr.URL)
@@ -64,7 +63,7 @@ var githubCmd = &cobra.Command{
 
 		{
 			fmt.Fprintln(v, "---")
-			fmt.Fprintln(v, "Notifications")
+			fmt.Fprintln(v, ":bell: Notifications | color=blue")
 
 			repos, err := c.FetchNotifications()
 			if err != nil {
@@ -72,6 +71,8 @@ var githubCmd = &cobra.Command{
 			}
 
 			for _, repo := range repos {
+				cnt += len(repo.Notifications)
+
 				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
 				for _, n := range repo.Notifications {
 					fmt.Fprintf(v, "%s\n", n.Title)
@@ -87,6 +88,8 @@ var githubCmd = &cobra.Command{
 			}
 		}
 
+		fmt.Printf("GitHub (%d)\n", cnt)
+		fmt.Println("---")
 		fmt.Println(v.String())
 		return nil
 	},
