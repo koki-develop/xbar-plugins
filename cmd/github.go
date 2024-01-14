@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	_ "embed"
+	"encoding/base64"
 	"fmt"
 	"os"
 	"strings"
@@ -8,6 +10,10 @@ import (
 	"github.com/koki-develop/xbar-plugins/internal/github"
 	"github.com/spf13/cobra"
 )
+
+//go:embed github.png
+var githubIconBytes []byte
+var githubIcon = base64.StdEncoding.EncodeToString(githubIconBytes)
 
 var (
 	githubToken string
@@ -110,7 +116,7 @@ var githubCmd = &cobra.Command{
 			fmt.Fprint(v, s.String())
 		}
 
-		fmt.Printf("GitHub (%d/%d/%d)\n", rrCnt, mpCnt, nCnt)
+		fmt.Printf("(%d/%d/%d) | templateImage=%s\n", rrCnt, mpCnt, nCnt, githubIcon)
 		fmt.Println("---")
 		fmt.Println(v.String())
 		return nil
