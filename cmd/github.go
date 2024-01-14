@@ -75,13 +75,10 @@ var githubCmd = &cobra.Command{
 
 				fmt.Fprintf(v, "%s/%s | size=12\n", repo.Owner, repo.Name)
 				for _, n := range repo.Notifications {
-					fmt.Fprintf(v, "%s\n", n.Title)
+					fmt.Fprintf(v, "(%s) %s | href=%s\n", n.Reason, n.Title, n.URL)
 					p, err := os.Executable()
 					if err != nil {
 						return err
-					}
-					if n.URL != "" {
-						fmt.Fprintf(v, "--Open in browser | href=%s\n", n.URL)
 					}
 					fmt.Fprintf(v, "--Mark as read | shell=%s param1=github param2=read-notification param3=%s refresh=true\n", p, n.ID)
 				}
