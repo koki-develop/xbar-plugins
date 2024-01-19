@@ -1,18 +1,3 @@
-# My xbar Plugins
+作り直した↓
 
-自分用。
-
-## Installation
-
-> [!NOTE]
-> 以下のインストール ~ セットアップが完了している必要がある。
-> - [gh](https://github.com/cli/cli)
-> - [go-task](https://github.com/go-task/task)
-
-```console
-$ task install
-```
-
-## LICENSE
-
-[MIT](./LICENSE)
+https://github.com/koki-develop/xbar-plugin-github
